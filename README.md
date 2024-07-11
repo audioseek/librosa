@@ -1,3 +1,8 @@
+---
+This is a fork of numba that does not depend on numba, see https://github.com/librosa/librosa/issues/1854
+---
+
+
 [![librosa logo](docs/img/librosa_logo_text.svg)](https://librosa.org/)
 
 # librosa

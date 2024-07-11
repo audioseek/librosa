@@ -209,6 +209,33 @@ Miscellaneous
     set_fftlib
 """
 
+# Mock numba functions, see https://github.com/librosa/librosa/issues/1854
+
+import sys
+from unittest.mock import MagicMock
+import sys
+
+def no_op_decorator(*args, **kwargs):
+    # print(f"running fake jit with args={args} and kwargs={kwargs}")
+    def dec(func):
+        return func
+    return dec
+
+def unsupported_decorator(name: str):
+    def decorator(*args, **kwargs):
+        def dec(func):
+            print(f"WARN: running unsupported numba decorator {orig_name}! with args={args} and kwargs={kwargs}")
+            return func
+        return dec
+    return decorator
+
+# Create a mock numba module with a no-op jit decorator
+sys.modules['numba'] = MagicMock()
+sys.modules['numba'].jit = no_op_decorator
+# will not work when used, but allows importing without crashes
+for attr_name in {'guvectorize', 'vectorize', 'stencil'}:
+    sys.modules['numba'][attr_name] = unsupported_decorator
+
 import lazy_loader as lazy
 from .version import version as __version__
 
