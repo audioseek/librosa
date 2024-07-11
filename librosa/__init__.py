@@ -234,7 +234,7 @@ sys.modules['numba'] = MagicMock()
 sys.modules['numba'].jit = no_op_decorator
 # will not work when used, but allows importing without crashes
 for attr_name in {'guvectorize', 'vectorize', 'stencil'}:
-    sys.modules['numba'][attr_name] = unsupported_decorator
+    sys.modules['numba'][attr_name] = unsupported_decorator(attr_name)
 
 import lazy_loader as lazy
 from .version import version as __version__
