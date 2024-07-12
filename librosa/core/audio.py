@@ -51,6 +51,7 @@ __all__ = [
 # -- CORE ROUTINES --#
 # Load should never be cached, since we cannot verify that the contents of
 # 'path' are unchanged across calls.
+"""
 def load(
     path: Union[
         str, int, os.PathLike[Any], sf.SoundFile, audioread.AudioFile, BinaryIO
@@ -63,7 +64,7 @@ def load(
     dtype: DTypeLike = np.float32,
     res_type: str = "soxr_hq",
 ) -> Tuple[np.ndarray, Union[int, float]]:
-    """Load an audio file as a floating point time series.
+    Load an audio file as a floating point time series.
 
     Audio will be automatically resampled to the given rate
     (default ``sr=22050``).
@@ -164,7 +165,6 @@ def load(
     >>> import audioread.ffdec  # Use ffmpeg decoder
     >>> aro = audioread.ffdec.FFmpegAudioFile(librosa.ex('brahms'))
     >>> y, sr = librosa.load(aro)
-    """
     if isinstance(path, tuple(audioread.available_backends())):
         # Force the audioread loader if we have a reader object already
         y, sr_native = __audioread_load(path, offset, duration, dtype)
@@ -197,7 +197,7 @@ def load(
 
 
 def __soundfile_load(path, offset, duration, dtype):
-    """Load an audio buffer using soundfile."""
+    Load an audio buffer using soundfile.
     if isinstance(path, sf.SoundFile):
         # If the user passed an existing soundfile object,
         # we can use it directly
@@ -224,10 +224,9 @@ def __soundfile_load(path, offset, duration, dtype):
 
 @deprecated(version="0.10.0", version_removed="1.0")
 def __audioread_load(path, offset, duration, dtype: DTypeLike):
-    """Load an audio buffer using audioread.
+    Load an audio buffer using audioread.
 
     This loads one block at a time, and then concatenates the results.
-    """
     buf = []
 
     if isinstance(path, tuple(audioread.available_backends())):
@@ -284,7 +283,6 @@ def __audioread_load(path, offset, duration, dtype: DTypeLike):
 
     return y, sr_native
 
-
 def stream(
     path: Union[str, int, sf.SoundFile, BinaryIO],
     *,
@@ -297,7 +295,7 @@ def stream(
     fill_value: Optional[float] = None,
     dtype: DTypeLike = np.float32,
 ) -> Generator[np.ndarray, None, None]:
-    """Stream audio in fixed-length buffers.
+    Stream audio in fixed-length buffers.
 
     This is primarily useful for processing large files that won't
     fit entirely in memory at once.
@@ -426,7 +424,6 @@ def stream(
     ...                                              n_fft=2048,
     ...                                              hop_length=2048,
     ...                                              center=False)
-    """
     if not util.is_positive_int(block_length):
         raise ParameterError(f"block_length={block_length} must be a positive integer")
     if not util.is_positive_int(frame_length):
@@ -471,6 +468,8 @@ def stream(
         else:
             yield block.T
 
+
+"""
 
 @cache(level=20)
 def to_mono(y: np.ndarray) -> np.ndarray:
@@ -790,18 +789,19 @@ def get_duration(
     )
 
     if path is not None:
-        try:
-            return sf.info(path).duration  # type: ignore
-        except sf.SoundFileRuntimeError:
-            warnings.warn(
-                "PySoundFile failed. Trying audioread instead."
-                "\n\tAudioread support is deprecated in librosa 0.10.0"
-                " and will be removed in version 1.0.",
-                stacklevel=2,
-                category=FutureWarning,
-            )
-            with audioread.audio_open(path) as fdesc:
-                return fdesc.duration  # type: ignore
+        raise ValueError("Cannot load from files with this fork")
+        # try:
+        #     return sf.info(path).duration  # type: ignore
+        # except sf.SoundFileRuntimeError:
+        #     warnings.warn(
+        #         "PySoundFile failed. Trying audioread instead."
+        #         "\n\tAudioread support is deprecated in librosa 0.10.0"
+        #         " and will be removed in version 1.0.",
+        #         stacklevel=2,
+        #         category=FutureWarning,
+        #     )
+        #     with audioread.audio_open(path) as fdesc:
+        #         return fdesc.duration  # type: ignore
 
     if y is None:
         if S is None:
@@ -820,8 +820,9 @@ def get_duration(
     return float(n_samples) / sr
 
 
+"""
 def get_samplerate(path: Union[str, int, sf.SoundFile, BinaryIO]) -> float:
-    """Get the sampling rate for a given file.
+    Get the sampling rate for a given file.
 
     Parameters
     ----------
@@ -843,10 +844,9 @@ def get_samplerate(path: Union[str, int, sf.SoundFile, BinaryIO]) -> float:
     >>> path = librosa.ex('trumpet')
     >>> librosa.get_samplerate(path)
     22050
-    """
     try:
-        if isinstance(path, sf.SoundFile):
-            return path.samplerate  # type: ignore
+        # if isinstance(path, sf.SoundFile):
+        #     return path.samplerate  # type: ignore
 
         return sf.info(path).samplerate  # type: ignore
     except sf.SoundFileRuntimeError:
@@ -859,7 +859,7 @@ def get_samplerate(path: Union[str, int, sf.SoundFile, BinaryIO]) -> float:
         )
         with audioread.audio_open(path) as fdesc:
             return fdesc.samplerate  # type: ignore
-
+"""
 
 @cache(level=20)
 def autocorrelate(
