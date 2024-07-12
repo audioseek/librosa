@@ -7,7 +7,6 @@ import os
 import pathlib
 import warnings
 
-import soundfile as sf
 import audioread
 import numpy as np
 import scipy
