@@ -7,7 +7,6 @@ import os
 import pathlib
 import warnings
 
-import audioread
 import numpy as np
 import scipy
 import scipy.signal
