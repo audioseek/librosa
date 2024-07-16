@@ -10,7 +10,6 @@ import warnings
 import numpy as np
 import scipy
 import scipy.signal
-import soxr
 import lazy_loader as lazy
 
 from numba import jit, stencil, guvectorize
